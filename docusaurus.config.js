@@ -29,7 +29,7 @@ const config = {
           routeBasePath: "wiki",
         },
         blog: {
-          showReadingTime: true,
+          showReadingTime: false,
           // Please change this to your repo.
           editUrl: "https://github.com/arcosx/site/edit/master/",
         },
@@ -52,7 +52,7 @@ const config = {
         items: [
           {
             type: "doc",
-            docId: "intro",
+            docId: "index",
             position: "left",
             label: "Wiki",
           },
