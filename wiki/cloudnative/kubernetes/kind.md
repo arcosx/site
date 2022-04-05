@@ -18,7 +18,7 @@ kind create cluster --name cluster2
 指定配置文件
 
 ```
-kind create cluster --config kind-config.yaml
+kind create cluster --name cluster1 --config kind-config.yaml
 ```
 
 多节点集群配置
@@ -33,8 +33,7 @@ nodes:
 ```
 
 网络映射本地网络  
-在基于 NodePort 暴露时有较大用处
-
+在基于 NodePort 暴露时有较大用处，需要注意和下文 Ingress 的使用搭配方法
 
 ```yaml title="kind-config.yaml"
 # three node (two workers) cluster config
@@ -49,18 +48,25 @@ nodes:
     protocol: udp # Optional, defaults to tcp
 ```
 
-### 删除集群
+选择 kubernetes 版本
 
-```shell
-kind delete cluster --name cluster1
-kind delete cluster --name cluster2
+官方Github项目Release上维护一个[镜像列表](https://github.com/kubernetes-sigs/kind/releases)
+
+
+```yaml title="kind-config.yaml"
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+nodes:
+- role: control-plane
+- role: worker
+  image: kindest/node:v1.16.15@sha256:64bac16b83b6adfd04ea3fbcf6c9b5b893277120f2b2cbf9f5fa3e5d4c2260cc
 ```
+
 ### Ingress 设置
 
 参考 https://kind.sigs.k8s.io/docs/user/ingress/#ingress-nginx
 
-```shell
-cat <<EOF | kind create cluster --name cluster1 --config=-
+```yaml title="kind-config.yaml"
 kind: Cluster
 apiVersion: kind.x-k8s.io/v1alpha4
 nodes:
@@ -78,10 +84,22 @@ nodes:
   - containerPort: 443
     hostPort: 443
     protocol: TCP
-EOF
-
 ```
+
 使用 ingress-nginx
 ```
 kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/kind/deploy.yaml
+```
+
+### 删除集群
+
+```shell
+kind delete cluster --name cluster1
+kind delete cluster --name cluster2
+```
+
+### 日常开发 Operator 使用配置
+
+```shell
+
 ```
