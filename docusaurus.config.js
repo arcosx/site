@@ -23,7 +23,6 @@ const config = {
       ({
         gtag: {
           trackingID: 'G-2CX6NSQ51B',
-          anonymizeIP: true,
         },
         docs: {
           path: "wiki",
