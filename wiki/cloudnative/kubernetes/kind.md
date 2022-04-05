@@ -126,7 +126,7 @@ nodes:
 ```
 
 ```shell
-kind create cluster --name cluster2 --config kind-config-cluster2.yaml
+kind create cluster --name cluster1 --config kind-config-cluster1.yaml
 kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/kind/deploy.yaml
 ```
 
