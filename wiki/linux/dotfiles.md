@@ -4,6 +4,7 @@ title: Dotfiles
 
 ### 教程
 **重要参考** [GitHub does dotfiles - dotfiles.github.io](http://dotfiles.github.io/)
+
 值得借鉴的 [thoughtbot/dotfiles: A set of vim, zsh, git, and tmux configuration files.](https://github.com/thoughtbot/dotfiles)
 ### 使用方法
 > 如果 dot file 包含公司脚本，密码等敏感信息，不建议在未加密的情况下托管到任何外网。
