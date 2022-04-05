@@ -2,19 +2,61 @@
 title: Kind
 ---
 
-#### 创建集群
+### 资源
+
+官网 https://kind.sigs.k8s.io/
+
+### 创建集群
+
+指定名称创建
 
 ```shell
 kind create cluster --name cluster1
 kind create cluster --name cluster2
 ```
 
-#### 删除集群
+指定配置文件
+
+```
+kind create cluster --config kind-config.yaml
+```
+
+多节点集群配置
+
+```yaml title="kind-config.yaml"
+# three node (two workers) cluster config
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+nodes:
+- role: control-plane
+- role: worker
+```
+
+网络映射本地网络  
+在基于 NodePort 暴露时有较大用处
+
+
+```yaml title="kind-config.yaml"
+# three node (two workers) cluster config
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+nodes:
+- role: control-plane
+  extraPortMappings:
+  - containerPort: 80
+    hostPort: 80
+    listenAddress: "0.0.0.0" # Optional, defaults to "0.0.0.0"
+    protocol: udp # Optional, defaults to tcp
+```
+
+### 删除集群
+
 ```shell
 kind delete cluster --name cluster1
 kind delete cluster --name cluster2
 ```
-#### Ingress 设置
+### Ingress 设置
+
 参考 https://kind.sigs.k8s.io/docs/user/ingress/#ingress-nginx
 
 ```shell
