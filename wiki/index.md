@@ -1,6 +1,6 @@
 ---
 sidebar_position: 1
-title: Welcome
+title: 欢迎 Welcome
 ---
 
 你好，朋友，欢迎来到 arcosx 的 Wiki，我在这里分享一些想法、笔记和思考。
@@ -8,3 +8,4 @@ title: Welcome
 
 Hello friends, welcome to the arcosx Wiki, where I share some thoughts, notes and reflections.
 If you have any suggestions or comments, you can give me feedback at the [Github repository](https://github.com/arcosx/site) corresponding to this Wiki! Or contact me directly!
+Considering my own convenience, I did not consider the English version for the time being. If you can't read Chinese, I suggest using Google Translate to view it, or contact me directly by email.
