@@ -106,7 +106,7 @@ const config = {
             ],
           },
         ],
-        copyright: `Copyright © ${new Date().getFullYear()} arcosx. Built with Docusaurus.`,
+        copyright: `Copyright © ${new Date().getFullYear()} arcosx. Built with Docusaurus. Hosted by Vercel.`,
       },
       prism: {
         theme: lightCodeTheme,
