@@ -100,12 +100,16 @@ kind delete cluster --name cluster2
 
 ### 使用 Kind 开发 Kubernetes 应用
 
-集群一 双节点 主力开发调试使用 最新版本 Kubernetes 开启 ingress 
+集群一 三节点 主力开发调试使用 最新版本 Kubernetes 开启 ingress 
 需要多节点。可部署供外部访问的持久化程序。
+如果是在其他机器部署 kind 本机也想直接连接连接的话，可以绑定 `apiServerAddress` 为 0.0.0.0，指定端口 apiServerPort 来保证当容器重启后仍然是 6443
 
 ```yaml title="kind-config-cluster1.yaml"
 kind: Cluster
 apiVersion: kind.x-k8s.io/v1alpha4
+networking:
+  apiServerAddress: "0.0.0.0"
+  apiServerPort: 6443
 nodes:
 - role: control-plane
   kubeadmConfigPatches:
@@ -116,10 +120,10 @@ nodes:
         node-labels: "ingress-ready=true"
   extraPortMappings:
   - containerPort: 80
-    hostPort: 8848
+    hostPort: 80
     protocol: TCP
   - containerPort: 443
-    hostPort: 8849
+    hostPort: 443
     protocol: TCP
 - role: worker
 - role: worker
@@ -156,7 +160,7 @@ kind create cluster --name cluster2 --config kind-config-cluster2.yaml
 kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/kind/deploy.yaml
 ```
 
-集群三 单节点（可选） 较低版本 (如v1.16) Kubernetes  仅用作适配情况验证
+集群三 单节点（可选） 较低版本 （如 v1.16) Kubernetes  仅用作适配情况验证
 ```yaml title="kind-config-cluster3.yaml"
 kind: Cluster
 apiVersion: kind.x-k8s.io/v1alpha4
