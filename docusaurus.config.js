@@ -15,7 +15,7 @@ const config = {
   favicon: "img/galaxy-favicon.ico",
   organizationName: "arcosx", // Usually your GitHub org/user name.
   projectName: "site", // Usually your repo name.
-  staticDirectories: ['public', 'static'],
+  staticDirectories: ['static'],
   presets: [
     [
       "classic",
