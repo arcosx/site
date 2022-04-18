@@ -30,6 +30,7 @@ const config = {
           // Please change this to your repo.
           editUrl: "https://github.com/arcosx/site/edit/master/",
           routeBasePath: "wiki",
+          showLastUpdateTime: true,
         },
         blog: {
           showReadingTime: false,
