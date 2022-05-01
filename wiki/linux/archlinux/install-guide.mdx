@@ -1,0 +1,275 @@
+---
+title: Install Guide
+---
+
+import TOCInline from "@theme/TOCInline";
+
+<TOCInline
+  // Only show h2 and h4 headings
+  toc={toc.filter((node) => node.level === 2 || node.level === 4)}
+  minHeadingLevel={2}
+  // Show h4 headings in addition to the default h2 and h3 headings
+  maxHeadingLevel={4}
+/>
+
+## 安装
+
+### 基础设置
+
+#### 禁用 reflector 服务
+
+```shell
+systemctl stop reflector.service
+systemctl status reflector.service
+```
+
+#### 检测安装基础设施
+
+```shell
+# UEFI 检测
+ls /sys/firmware/efi/efivars
+# 网络连通性
+ping www.bilibili.com
+# 将系统时间与网络时间进行同步
+timedatectl set-ntp true
+ # 检查服务状态
+timedatectl status
+```
+
+#### 分区
+
+下面含有 `>` 表示命令发生在 `fdisk` 命令内。
+
+###### 清盘
+
+```shell
+# 列出所有分区
+# 会看到很多设备信息 假设需要装系统的硬盘为 /dev/sda
+fdisk -l
+# 分区
+fdisk /dev/sda
+# 清空已有分区
+> g # 新建 GPT 分区表
+> w # 保存
+# 查看是否成功清理
+fdisk -l
+# 再次进入开始
+fdisk /dev/sda
+```
+
+##### 新建分区
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+
+<Tabs>
+  <TabItem value="EFI" label="EFI System" default>
+
+```shell
+> n
+# 选择分区区号，使用默认值，fdisk 会自动递增分区号
+> Enter
+# 分区开始扇区号，使用默认值
+> Enter
+# 分区结束扇区号，输入分区大小
+> +512M
+# 修改刚刚创建的分区类型
+> t
+# 选择分区号, 使用默认值，fdisk 会自动选择刚刚新建的分区
+> Enter
+# 使用 EFI System 类型
+> 1
+# 保存
+> w
+```
+
+  </TabItem>
+  <TabItem value="swap" label="Linux Swap">
+
+```shell
+> n
+# 选择分区区号，使用默认值，fdisk 会自动递增分区号
+> Enter
+# 分区开始扇区号，使用默认值
+> Enter
+# 分区结束扇区号，输入分区大小
+> +72G
+# 修改刚刚创建的分区类型
+> t
+# 选择分区号, 使用默认值，fdisk 会自动选择刚刚新建的分区
+> Enter
+# 使用 Linux Root 类型
+> 19
+# 保存
+> w
+```
+
+  </TabItem>
+  <TabItem value="root" label="Linux Root (x86-64)">
+
+```shell
+> n
+# 选择分区区号，使用默认值，fdisk 会自动递增分区号
+> Enter
+# 分区开始扇区号，使用默认值
+> Enter
+# 分区结束扇区号，使用最后的空间
+> Enter
+# 修改刚刚创建的分区类型
+> t
+# 选择分区号, 使用默认值，fdisk 会自动选择刚刚新建的分区
+> Enter
+# 使用 Linux swap 类型
+> 23
+# 保存
+> w
+```
+
+  </TabItem>
+</Tabs>
+
+这里其实推荐给/home 目录单独再分一个区，保管一些用户目录下产生的文件，重装系统会更加方便。
+
+##### 格式化与挂载
+
+```shell
+# EFI 目录
+mkfs.fat -F32 /dev/sda1
+# SWAP 目录
+mkswap /dev/sda2
+swapon /dev/sda2
+# ROOT 目录
+mkfs.ext4 /dev/sda3
+```
+
+```shell
+# 顺序不可以替换
+mount /dev/sda3 /mnt
+mkdir /mnt/boot
+mount /dev/sda1 /mnt/boot
+```
+
+##### 安装基本工具
+
+```shell
+# 可能需要手动配置镜像源头，下面的链接是中国大陆地区可用的镜像源参考。
+# https://archlinux.org/mirrorlist/?country=CN
+vim /etc/pacman.d/mirrorlist
+pacstrap /mnt base base-devel linux linux-firmware intel-ucode bash-completion vim  sudo
+```
+
+##### 写入 fstab
+
+```shell
+genfstab -U /mnt >> /mnt/etc/fstab
+cat /mnt/etc/fstab
+
+```
+
+### 新系统初始化设置
+
+首先进入新系统分区
+
+```
+arch-chroot /mnt
+```
+
+#### 权限设置
+
+```shell
+# 修改密码
+passwd
+```
+
+#### 时间与语言设置
+
+```shell
+# 设置时区
+ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
+hwclock --systohc
+# 检查时间
+date -R
+```
+
+```shell title=/etc/locale.gen
+# 注释下面 2 行 开启英语与中文
+en_US.UTF-8 UTF-8
+zh_CN.UTF-8 UTF-8
+```
+
+```shell
+locale-gen
+```
+
+```shell title=/etc/locale.conf
+LANG=en_US.UTF-8
+```
+
+设置机器名称
+
+```shell title=/etc/hostname
+${myhostname}
+```
+
+#### 网络设置
+
+```shell title=/etc/hosts
+127.0.0.1   localhost
+::1         localhost ip6-localhost ip6-loopback
+127.0.1.1   ${myhostname}.local	${myhostname}
+::1         ${myhostname}
+```
+
+启动 dhcpcd 服务
+
+```
+pacman -S dhcpcd networkmanager
+systemctl enable dhcpcd
+systemctl enable NetworkManager.service
+```
+
+#### 安装桌面与终端
+
+安装 i3 桌面
+
+```shell
+sudo pacman -S i3
+```
+
+安装终端
+
+```
+sudo pacman -S alacritty
+```
+
+#### 安装驱动
+
+显卡驱动
+
+```
+sudo pacman -S xf86-video-intel
+```
+
+#### 设置用户
+
+```shell
+useradd -m ${username}
+passwd ${username}\
+
+EDITOR=vim visudo
+${username} ALL=(ALL) ALL
+```
+
+#### 安装 GRUB
+
+```shell
+pacman -S grub
+pacman -S efibootmgr
+grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=grub
+grub-mkconfig -o /boot/grub/grub.cfg
+```
+
+## 参考致谢
+
+[archlinux 简明指南 — Arch Linux 安装使用教程](https://arch.icekylin.online/)  
+[Installation guide (简体中文) - ArchWiki](https://wiki.archlinux.org/title/Installation_guide_%28%E7%AE%80%E4%BD%93%E4%B8%AD%E6%96%87%29)

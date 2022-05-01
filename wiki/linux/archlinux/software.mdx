@@ -1,0 +1,372 @@
+---
+title: Software
+---
+
+import TOCInline from "@theme/TOCInline";
+
+<TOCInline
+  // Only show h2 and h4 headings
+  toc={toc.filter((node) => node.level === 2 || node.level === 4)}
+  minHeadingLevel={2}
+  // Show h4 headings in addition to the default h2 and h3 headings
+  maxHeadingLevel={4}
+/>
+
+#### 中文社区仓库
+
+[Arch Linux 中文社区仓库 « Arch Linux](https://www.archlinuxcn.org/archlinux-cn-repo-and-mirror/)
+
+```shell title=/etc/pacman.conf
+[archlinuxcn]
+Server = https://mirrors.tuna.tsinghua.edu.cn/archlinuxcn/$arch
+```
+
+```
+pacman -S archlinuxcn-keyring
+```
+
+#### SSH
+
+```shell
+pacman -S openssh
+systemctl start sshd
+systemctl enable sshd
+# 查看本机IP地址
+ip -brief address
+```
+
+#### 字体
+
+```shell
+pacman -S wqy-microhei ttf-roboto noto-fonts noto-fonts-emoji noto-fonts-cjk adobe-source-han-sans-cn-fonts adobe-source-han-serif-cn-fonts adobe-source-han-sans-otc-fonts ttf-dejavu
+```
+
+<details>
+  <summary>设置参考</summary>
+
+[Font Configuration (简体中文)/Chinese (简体中文) - ArchWiki](https://wiki.archlinux.org/title/Font_Configuration_%28%E7%AE%80%E4%BD%93%E4%B8%AD%E6%96%87%29/Chinese_%28%E7%AE%80%E4%BD%93%E4%B8%AD%E6%96%87%29#Anti-aliasing_%E6%95%88%E6%9E%9C%E7%9A%84%E5%AD%97%E4%BD%93%E5%8F%82%E8%80%83%E9%85%8D%E7%BD%AE)
+
+```xml title=~/.config/fontconfig/fonts.conf
+
+<?xml version="1.0"?>
+<!DOCTYPE fontconfig SYSTEM "fonts.dtd">
+<fontconfig>
+  <its:rules xmlns:its="http://www.w3.org/2005/11/its" version="1.0">
+    <its:translateRule
+      translate="no"
+      selector="/fontconfig/*[not(self::description)]"
+    />
+  </its:rules>
+
+  <description>Android Font Config</description>
+
+  <!-- Font directory list -->
+
+  <dir>/usr/share/fonts</dir>
+  <dir>/usr/local/share/fonts</dir>
+  <dir prefix="xdg">fonts</dir>
+  <!-- the following element will be removed in the future -->
+  <dir>~/.fonts</dir>
+
+  <!-- 关闭内嵌点阵字体 -->
+  <match target="font">
+    <edit name="embeddedbitmap" mode="assign">
+      <bool>false</bool>
+    </edit>
+  </match>
+
+  <!-- 英文默认字体使用 Roboto 和 Noto Serif ,终端使用 DejaVu Sans Mono. -->
+  <match>
+    <test qual="any" name="family">
+      <string>serif</string>
+    </test>
+    <edit name="family" mode="prepend" binding="strong">
+      <string>Noto Serif</string>
+    </edit>
+  </match>
+  <match target="pattern">
+    <test qual="any" name="family">
+      <string>sans-serif</string>
+    </test>
+    <edit name="family" mode="prepend" binding="strong">
+      <string>Roboto</string>
+    </edit>
+  </match>
+  <match target="pattern">
+    <test qual="any" name="family">
+      <string>monospace</string>
+    </test>
+    <edit name="family" mode="prepend" binding="strong">
+      <string>DejaVu Sans Mono</string>
+    </edit>
+  </match>
+
+  <!-- 中文默认字体使用思源黑体和思源宋体,不使用　Noto Sans CJK SC 是因为这个字体会在特定情况下显示片假字. -->
+  <match>
+    <test name="lang" compare="contains">
+      <string>zh</string>
+    </test>
+    <test name="family">
+      <string>serif</string>
+    </test>
+    <edit name="family" mode="prepend">
+      <string>Source Han Serif CN</string>
+    </edit>
+  </match>
+  <match>
+    <test name="lang" compare="contains">
+      <string>zh</string>
+    </test>
+    <test name="family">
+      <string>sans-serif</string>
+    </test>
+    <edit name="family" mode="prepend">
+      <string>Source Han Sans CN</string>
+    </edit>
+  </match>
+  <match>
+    <test name="lang" compare="contains">
+      <string>zh</string>
+    </test>
+    <test name="family">
+      <string>monospace</string>
+    </test>
+    <edit name="family" mode="prepend">
+      <string>Noto Sans Mono CJK SC</string>
+    </edit>
+  </match>
+
+  <!-- Windows & Linux Chinese fonts. -->
+  <!-- 把所有常见的中文字体映射到思源黑体和思源宋体，这样当这些字体未安装时会使用思源黑体和思源宋体.
+解决特定程序指定使用某字体，并且在字体不存在情况下不会使用fallback字体导致中文显示不正常的情况. -->
+  <match target="pattern">
+    <test qual="any" name="family">
+      <string>WenQuanYi Zen Hei</string>
+    </test>
+    <edit name="family" mode="assign" binding="same">
+      <string>Source Han Sans CN</string>
+    </edit>
+  </match>
+  <match target="pattern">
+    <test qual="any" name="family">
+      <string>WenQuanYi Micro Hei</string>
+    </test>
+    <edit name="family" mode="assign" binding="same">
+      <string>Source Han Sans CN</string>
+    </edit>
+  </match>
+  <match target="pattern">
+    <test qual="any" name="family">
+      <string>WenQuanYi Micro Hei Light</string>
+    </test>
+    <edit name="family" mode="assign" binding="same">
+      <string>Source Han Sans CN</string>
+    </edit>
+  </match>
+  <match target="pattern">
+    <test qual="any" name="family">
+      <string>Microsoft YaHei</string>
+    </test>
+    <edit name="family" mode="assign" binding="same">
+      <string>Source Han Sans CN</string>
+    </edit>
+  </match>
+  <match target="pattern">
+    <test qual="any" name="family">
+      <string>SimHei</string>
+    </test>
+    <edit name="family" mode="assign" binding="same">
+      <string>Source Han Sans CN</string>
+    </edit>
+  </match>
+  <match target="pattern">
+    <test qual="any" name="family">
+      <string>SimSun</string>
+    </test>
+    <edit name="family" mode="assign" binding="same">
+      <string>Source Han Serif CN</string>
+    </edit>
+  </match>
+  <match target="pattern">
+    <test qual="any" name="family">
+      <string>SimSun-18030</string>
+    </test>
+    <edit name="family" mode="assign" binding="same">
+      <string>Source Han Serif CN</string>
+    </edit>
+  </match>
+
+  <!-- Load local system customization file -->
+  <include ignore_missing="yes">conf.d</include>
+
+  <!-- Font cache directory list -->
+
+  <cachedir>/var/cache/fontconfig</cachedir>
+  <cachedir prefix="xdg">fontconfig</cachedir>
+  <!-- the following element will be removed in the future -->
+  <cachedir>~/.fontconfig</cachedir>
+
+  <config>
+    <!-- Rescan configuration every 30 seconds when FcFontSetList is called -->
+    <rescan>
+      <int>30</int>
+    </rescan>
+  </config>
+</fontconfig>
+```
+
+</details>
+
+#### 输入法
+
+```shell
+pacman -S font-manager fcitx5-rime-git fcitx5-chinese-addons-git fcitx5-git fcitx5-gtk-git fcitx5-qt5-git fcitx5-material-color
+```
+
+配置时需要关闭输入法
+
+```shell
+kill `ps -A | grep fcitx5 | awk '{print $1}'`
+```
+
+```shell title=~/.config/fcitx5/profile
+[Groups/0]
+# Group Name
+Name=Default
+# Layout
+Default Layout=us
+# Default Input Method
+DefaultIM=rime
+
+[Groups/0/Items/0]
+# Name
+Name=keyboard-us
+# Layout
+Layout=
+
+[Groups/0/Items/1]
+# Name
+Name=rime
+# Layout
+Layout=
+
+[GroupOrder]
+0=Default
+```
+
+详细配置参考
+[hosxy/Fcitx5-Material-Color](https://github.com/hosxy/Fcitx5-Material-Color)
+
+```shell title=~/.config/fcitx5/conf/classicui.conf
+Vertical Candidate List=False
+PerScreenDPI=True
+Font="WenQuanYi Micro Hei Regular 13"
+Theme=Material-Color-DeepPurple
+```
+
+```shell title=~/.config/fcitx5/conf/pinyin.conf
+# 可用时在应用程序中显示预编辑文本
+PreeditInApplication=True
+```
+
+```shell title=/etc/environment
+GTK_IM_MODULE=fcitx
+QT_IM_MODULE=fcitx
+XMODIFIERS=@im=fcitx
+INPUT_METHOD=fcitx
+SDL_IM_MODULE=fcitx
+GLFW_IM_MODULE=ibus
+```
+
+i3 配置自启动
+
+```shell title=~/.config/i3/config
+exec --no-startup-id fcitx5 -d
+```
+
+##### 常用软件
+
+```shell
+pamac -S firefox firefox-i18n-zh-cn
+pacman -S tmux python python-pip wget
+pacman -S gnome-keyring libsecret
+yay -S visual-studio-code-bin google-chrome
+yay -S telegram-desktop-bin
+```
+
+#### 代理
+
+[常见问题 | Clash for Windows](https://docs.cfw.lbyczf.com/contents/questions.html#service-mode-%E6%97%A0%E6%B3%95%E5%AE%89%E8%A3%85-windows)
+
+```
+yay -S  clash-for-windows-chinese nftables iproute2
+# 服务模式配置
+curl https://gist.githubusercontent.com/Fndroid/2119fcb5ccb5a543a8f6a609418ae43f/raw/592eba4f480c7ccb4f29c9b8e80d24bfd5dda8cf/linux.sh > cfw-tun.sh && chmod +x cfw-tun.sh && sudo ./cfw-tun.sh install <cfw安装目录>
+
+```
+
+#### 桌面与终端
+
+##### Rofi
+
+[davatorium/rofi: Rofi: A window switcher, application launcher and dmenu replacement](https://github.com/davatorium/rofi)
+
+```shell
+sudo pacman -S rofi
+mkdir -p ~/.config/rofi
+rofi -dump-config > ~/.config/rofi/config.rasi
+```
+
+```shell title=~/.config/i3/config
+bindsym $mod+d exec --no-startup-id rofi -show combi
+```
+
+##### zsh
+
+```
+pacman -S zsh
+
+sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+
+# Nerd字体
+yay -S nerd-fonts-complete
+pacman -S starship
+
+git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
+```
+
+```shell title=~/.zshrc
+plugins=(... git sudo zsh-syntax-highlighting z)
+HIST_STAMPS="yyyy-mm-dd"
+```
+
+#### 开发
+
+##### go language
+
+```shell
+pacman -S go
+# 安装多版管理工具
+zsh < <(curl -s -S -L https://raw.githubusercontent.com/moovweb/gvm/master/binscripts/gvm-installer
+# example
+gvm install go1.18.1
+gvm install go1.17
+
+```
+
+##### docker
+
+```
+pacman -S docker
+sudo systemctl start docker.service
+sudo systemctl enable docker.service
+sudo groupadd docker
+sudo usermod -aG docker <username>
+docker ps
+```
+
+##### git
+
+```shell
+pacman -S github-cli
+```
