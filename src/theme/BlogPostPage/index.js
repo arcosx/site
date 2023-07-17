@@ -7,6 +7,8 @@ import BlogPostItem from '@theme/BlogPostItem';
 import BlogPostPaginator from '@theme/BlogPostPaginator';
 import BlogPostPageMetadata from '@theme/BlogPostPage/Metadata';
 import TOC from '@theme/TOC';
+import Comment from '@site/src/components/Comment';
+
 function BlogPostPageContent({sidebar, children}) {
   const {metadata, toc} = useBlogPost();
   const {nextItem, prevItem, frontMatter} = metadata;
@@ -14,6 +16,7 @@ function BlogPostPageContent({sidebar, children}) {
     hide_table_of_contents: hideTableOfContents,
     toc_min_heading_level: tocMinHeadingLevel,
     toc_max_heading_level: tocMaxHeadingLevel,
+    comments = true,
   } = frontMatter;
   return (
     <BlogLayout
@@ -32,6 +35,8 @@ function BlogPostPageContent({sidebar, children}) {
       {(nextItem || prevItem) && (
         <BlogPostPaginator nextItem={nextItem} prevItem={prevItem} />
       )}
+
+    {comments && (<Comment id={children.slug} />)}
     </BlogLayout>
   );
 }
