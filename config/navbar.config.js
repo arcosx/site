@@ -8,13 +8,18 @@ const navbar = {
         {
             type: "doc",
             docId: "index",
-            position: "right",
+            position: "left",
             label: "Wiki",
         },
         {
-            href: "https://github.com/arcosx/site",
-            label: "GitHub",
+            href: "https://github.com/arcosx",
             position: "right",
+            className: 'header-github-link',
+        },
+        {
+            href: "https://github.com/arcosx",
+            position: "right",
+            className: 'header-twitter-link',
         },
     ],
 }
