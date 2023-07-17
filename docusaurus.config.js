@@ -27,14 +27,13 @@ const config = {
         docs: {
           path: "wiki",
           sidebarPath: require.resolve("./sidebars.js"),
-          // Please change this to your repo.
           editUrl: "https://github.com/arcosx/site/edit/master/",
           routeBasePath: "wiki",
           showLastUpdateTime: true,
         },
         blog: {
+          routeBasePath: "/",
           showReadingTime: false,
-          // Please change this to your repo.
           editUrl: "https://github.com/arcosx/site/edit/master/",
         },
         theme: {
@@ -57,57 +56,15 @@ const config = {
           {
             type: "doc",
             docId: "index",
-            position: "left",
+            position: "right",
             label: "Wiki",
           },
-          { to: "/blog", label: "Blog", position: "left" },
           {
             href: "https://github.com/arcosx/site",
             label: "GitHub",
             position: "right",
           },
         ],
-      },
-      footer: {
-        style: "dark",
-        links: [
-          {
-            title: "Social",
-            items: [
-              {
-                label: "Twitter",
-                href: "https://twitter.com/_arcosx",
-              },
-              {
-                label: "Linkedin",
-                href: "https://www.linkedin.com/in/wangguobin/",
-              },
-            ],
-          },
-          {
-            title: "Community",
-            items: [
-              {
-                label: "Github",
-                href: "https://github.com/arcosx",
-              },
-              {
-                label: "Stackoverflow",
-                href: "https://stackoverflow.com/users/6897372/arcosx",
-              },
-            ],
-          },
-          {
-            title: "Sites",
-            items: [
-              {
-                label: "Blog",
-                to: "/blog",
-              },
-            ],
-          },
-        ],
-        copyright: `Copyright © ${new Date().getFullYear()} arcosx. Built with Docusaurus. Hosted by Vercel.`,
       },
       prism: {
         theme: lightCodeTheme,
