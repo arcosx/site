@@ -1,6 +1,11 @@
 // @ts-check
 // Note: type annotations allow type checking and IDEs autocompletion
 
+const navbar = require("./config/navbar.config.js")
+const analytics = require("./config/analytics.config.js")
+const blog = require("./config/blog.config.js")
+const docs = require("./config/docs.config.js")
+
 const lightCodeTheme = require("prism-react-renderer/themes/github");
 const darkCodeTheme = require("prism-react-renderer/themes/dracula");
 
@@ -21,21 +26,9 @@ const config = {
       "classic",
       /** @type {import('@docusaurus/preset-classic').Options} */
       ({
-        gtag: {
-          trackingID: 'G-2CX6NSQ51B',
-        },
-        docs: {
-          path: "wiki",
-          sidebarPath: require.resolve("./sidebars.js"),
-          editUrl: "https://github.com/arcosx/site/edit/master/",
-          routeBasePath: "wiki",
-          showLastUpdateTime: true,
-        },
-        blog: {
-          routeBasePath: "/",
-          showReadingTime: false,
-          editUrl: "https://github.com/arcosx/site/edit/master/",
-        },
+        gtag: analytics.gtag,
+        docs: docs,
+        blog: blog,
         theme: {
           customCss: require.resolve("./src/css/custom.css"),
         },
@@ -46,26 +39,7 @@ const config = {
   themeConfig:
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
-      navbar: {
-        title: "Arcosx Galaxy",
-        logo: {
-          alt: "Arcosx Galaxy Logo",
-          src: "img/galaxy-logo.svg",
-        },
-        items: [
-          {
-            type: "doc",
-            docId: "index",
-            position: "right",
-            label: "Wiki",
-          },
-          {
-            href: "https://github.com/arcosx/site",
-            label: "GitHub",
-            position: "right",
-          },
-        ],
-      },
+      navbar: navbar,
       prism: {
         theme: lightCodeTheme,
         darkTheme: darkCodeTheme,
