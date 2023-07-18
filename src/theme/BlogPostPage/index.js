@@ -7,7 +7,7 @@ import BlogPostItem from '@theme/BlogPostItem';
 import BlogPostPaginator from '@theme/BlogPostPaginator';
 import BlogPostPageMetadata from '@theme/BlogPostPage/Metadata';
 import TOC from '@theme/TOC';
-import Comment from '@site/src/components/Comment';
+import { Waline } from "@site/src/components/Comment";
 
 function BlogPostPageContent({sidebar, children}) {
   const {metadata, toc} = useBlogPost();
@@ -18,6 +18,12 @@ function BlogPostPageContent({sidebar, children}) {
     toc_max_heading_level: tocMaxHeadingLevel,
     comments = true,
   } = frontMatter;
+
+  const walineOptions = {
+    serverURL: "https://c.arcosx.cn",
+    path: children.slug,
+  };
+
   return (
     <BlogLayout
       sidebar={sidebar}
@@ -36,7 +42,7 @@ function BlogPostPageContent({sidebar, children}) {
         <BlogPostPaginator nextItem={nextItem} prevItem={prevItem} />
       )}
 
-    {comments && (<Comment id={children.slug} />)}
+      {comments && (<Waline {...walineOptions} />)}
     </BlogLayout>
   );
 }

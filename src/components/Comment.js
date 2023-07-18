@@ -1,33 +1,30 @@
-import React, { PureComponent } from 'react';
-import {
-  init,
-} from '@waline/client';
+import React, { useEffect, useRef } from 'react';
+import { init } from '@waline/client';
 
 import '@waline/client/dist/waline.css';
 
-export default class Comment extends PureComponent {
-  constructor(props) {
-    super(props)
-    this._commentRef = React.createRef()
-  }
+export const Waline = (props) => {
+  const walineInstanceRef = useRef(null);
+  const containerRef = React.createRef();
 
-  async componentDidMount() {
-    if (typeof window === "undefined") {
-      return
+  useEffect(() => {
+    walineInstanceRef.current = init({
+      ...props,
+      el: containerRef.current,
+    });
+
+    return () => {
+      if (walineInstanceRef.current && typeof walineInstanceRef.current.destroy === 'function') {
+        walineInstanceRef.current.destroy();
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    if (walineInstanceRef.current && typeof walineInstanceRef.current.update === 'function') {
+      walineInstanceRef.current.update(props);
     }
-    if (!this._commentRef.current) {
-      return
-    }
+  }, [props]);
 
-    this.Waline = init({
-      el: this._commentRef.current,
-      serverURL: 'https://c.arcosx.cn',
-      visitor: true,
-      path: this.props.id,
-    })
-  }
-
-  render() {
-    return <div className="comment-area" ref={this._commentRef} />
-  }
-}
+  return <div ref={containerRef} />;
+};
